@@ -9,7 +9,8 @@ app.get('/:names/:gameweek/:exact', async (req, res) => {
   const { names, gameweek, exact } = req.params
   const found = {}
 
-  const players = await axios.get('https://fantasy.premierleague.com/api/bootstrap-static/')
+  try{
+  const players = await axios.get('https://antasy.premierleague.com/api/bootstrap-static/')
 
   const localNames = names.split(' ').filter(item => item !== '').map(item => item.includes('_') ? item.split('_').join(' ') : item)
   
@@ -39,7 +40,11 @@ app.get('/:names/:gameweek/:exact', async (req, res) => {
     return [...await res, { player: item, points: result.data.history.find(item => item.round === ~~gameweek) ?? { total_points: 0, bonus: 0, minutes: 0 } }]
   }, [])
 
-  res.send({ response, notFound: Object.keys(found).filter(item => !found[item]) })
+  res.send({ status: 200, response, notFound: Object.keys(found).filter(item => !found[item]) })
+    
+  }catch(e){
+   res.send({status: e.status, reason: 'We are unable to reach the FPL servers, please try again after some time'})
+  }
 })
 
 app.listen(3000, () => {
