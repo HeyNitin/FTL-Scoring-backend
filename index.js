@@ -19,12 +19,12 @@ app.get('/:names/:gameweek/:exact', async (req, res) => {
     for (let name of localNames) {
       found[name] = found[name] === true
       if (exact === 'true') {
-        if (item.web_name.toLowerCase() === name.toLowerCase()) {
+        if (item.web_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() === name.toLowerCase()) {
           found[name] = true
           return true
         }
       } else {
-        if ((item.web_name.toLowerCase()+' '+item.first_name.toLowerCase()+' '+item.second_name.toLowerCase()).includes(name.toLowerCase())) {
+        if ((item.web_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()+' '+item.first_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()+' '+item.second_name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).includes(name.toLowerCase())) {
           found[name] = true
           return true
         }
