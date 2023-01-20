@@ -37,7 +37,7 @@ app.get('/:names/:gameweek/:exact', async (req, res) => {
 
   let response = await localPlayers.reduce(async (res, item) => {
     const result = await axios.get(`https://fantasy.premierleague.com/api/element-summary/${item.id}/`)
-    return [...await res, { player: item, points: result.data.history.find(item => item.round === ~~gameweek) ?? { total_points: 0, bonus: 0, minutes: 0 } }]
+    return [...await res, { player: item, points: result.data.history.filter(item => item.round === ~~gameweek) ?? { total_points: 0, bonus: 0, minutes: 0 } }]
   }, [])
 
   res.send({ status: 200, response, notFound: Object.keys(found).filter(item => !found[item]) })
